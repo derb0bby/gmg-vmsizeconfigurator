@@ -5,6 +5,7 @@ export interface Application {
   ramRequirement: number;
   storageRequirement: number;
   description: string;
+  hasUsbRequirement: boolean;
 }
 
 export interface VMSize {
@@ -15,6 +16,7 @@ export interface VMSize {
   storage: number;
   price: number;
   description: string;
+  hasUsbPort?: boolean;
 }
 
 export interface UserRequirements {
@@ -22,4 +24,22 @@ export interface UserRequirements {
   ram: number;
   storage: number;
   selectedApplications: string[];
+  requiresUsb: boolean;
+}
+
+export interface ApplicationParameter {
+  id: string;
+  applicationId: string;
+  name: string;
+  type: 'number' | 'multipleChoice';
+  defaultValue: number | string[];
+  options?: string[]; // For multiple choice parameters
+  min?: number; // For number parameters
+  max?: number; // For number parameters
+}
+
+export interface ApplicationParameterValues {
+  [applicationId: string]: {
+    [parameterId: string]: number | string[];
+  };
 }
