@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { applications } from './data/applications';
 import { vmSizes } from './data/vmSizes';
 import { applicationParameters } from './data/applicationParameters';
-import { ApplicationParameterValues } from './types';
+import { ApplicationParameterValues, Application } from './types';
 import Header from './components/Header';
 import ApplicationSelector from './components/ApplicationSelector';
 import ApplicationParameters from './components/ApplicationParameters';
 import VMRecommendation from './components/VMRecommendation';
 import { calculateRequirements, findOptimalVM, findAlternativeVMs } from './utils/vmCalculator';
-import { Server, RefreshCw } from 'lucide-react';
+import { Server, RefreshCw, Plus, X } from 'lucide-react';
 
 function App() {
   // Filter to only include color applications
@@ -16,26 +16,36 @@ function App() {
     ['color-proof', 'open-color', 'color-server-conv-multi', 'color-server-digital'].includes(app.id)
   );
   
-  const [selectedApplication, setSelectedApplication] = useState<string>('');
+  const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
   const [parameterValues, setParameterValues] = useState<ApplicationParameterValues>({});
+  const [activeTab, setActiveTab] = useState<string | null>(null);
   
-  const [requiredCpu, setRequiredCpu] = useState(1);
-  const [requiredRam, setRequiredRam] = useState(2);
-  const [requiredStorage, setRequiredStorage] = useState(20);
-  const [requiresUsb, setRequiresUsb] = useState(false);
-  
-  const [recommendedVM, setRecommendedVM] = useState<typeof vmSizes[0] | null>(null);
-  const [alternativeVMs, setAlternativeVMs] = useState<typeof vmSizes>([]);
+  // Requirements and recommendations for each application
+  const [appRequirements, setAppRequirements] = useState<{
+    [appId: string]: {
+      cpu: number;
+      ram: number;
+      storage: number;
+      usb: boolean;
+      recommendedVM: typeof vmSizes[0] | null;
+      alternativeVMs: typeof vmSizes;
+    }
+  }>({});
   
   const handleSelectApplication = (id: string) => {
-    // If the same application is clicked, deselect it
-    if (selectedApplication === id) {
-      setSelectedApplication('');
+    // If the application is already selected, do nothing
+    if (selectedApplications.includes(id)) {
       return;
     }
     
-    // Otherwise, select the new application
-    setSelectedApplication(id);
+    // Add the application to selected applications
+    const newSelectedApps = [...selectedApplications, id];
+    setSelectedApplications(newSelectedApps);
+    
+    // Set as active tab if it's the first one or if no active tab
+    if (newSelectedApps.length === 1 || !activeTab) {
+      setActiveTab(id);
+    }
     
     // Initialize parameter values for the newly selected application
     const appParams = applicationParameters.filter(param => param.applicationId === id);
@@ -57,6 +67,22 @@ function App() {
     }
   };
   
+  const handleRemoveApplication = (id: string) => {
+    // Remove the application from selected applications
+    const newSelectedApps = selectedApplications.filter(appId => appId !== id);
+    setSelectedApplications(newSelectedApps);
+    
+    // If the active tab is being removed, set a new active tab
+    if (activeTab === id) {
+      setActiveTab(newSelectedApps.length > 0 ? newSelectedApps[0] : null);
+    }
+    
+    // Remove the application's requirements
+    const newAppRequirements = { ...appRequirements };
+    delete newAppRequirements[id];
+    setAppRequirements(newAppRequirements);
+  };
+  
   const handleParameterChange = (applicationId: string, parameterId: string, value: number | string[]) => {
     setParameterValues(prev => ({
       ...prev,
@@ -68,55 +94,64 @@ function App() {
   };
   
   const handleReset = () => {
-    setSelectedApplication('');
+    setSelectedApplications([]);
     setParameterValues({});
+    setActiveTab(null);
+    setAppRequirements({});
   };
   
   useEffect(() => {
-    if (!selectedApplication) {
-      // Reset requirements if no application is selected
-      setRequiredCpu(1);
-      setRequiredRam(2);
-      setRequiredStorage(20);
-      setRequiresUsb(false);
-      setRecommendedVM(null);
-      setAlternativeVMs([]);
-      return;
-    }
+    // Update requirements and recommendations for each selected application
+    const newAppRequirements = { ...appRequirements };
     
-    // Get the selected application's minimal requirements
-    const app = colorApplications.find(a => a.id === selectedApplication);
+    selectedApplications.forEach(appId => {
+      const app = colorApplications.find(a => a.id === appId);
+      
+      if (app) {
+        // Find optimal VM based on application parameters
+        const optimal = findOptimalVM(
+          vmSizes, 
+          app.cpuRequirement, 
+          app.ramRequirement, 
+          app.storageRequirement, 
+          app.hasUsbRequirement, 
+          [appId], 
+          parameterValues
+        );
+        
+        // Find alternative VMs
+        const alternatives = findAlternativeVMs(
+          vmSizes, 
+          optimal, 
+          app.cpuRequirement, 
+          app.ramRequirement, 
+          app.storageRequirement, 
+          app.hasUsbRequirement
+        );
+        
+        newAppRequirements[appId] = {
+          cpu: app.cpuRequirement,
+          ram: app.ramRequirement,
+          storage: app.storageRequirement,
+          usb: app.hasUsbRequirement,
+          recommendedVM: optimal,
+          alternativeVMs: alternatives
+        };
+      }
+    });
     
-    if (app) {
-      setRequiredCpu(app.cpuRequirement);
-      setRequiredRam(app.ramRequirement);
-      setRequiredStorage(app.storageRequirement);
-      setRequiresUsb(app.hasUsbRequirement);
-      
-      // Find optimal VM based on application parameters
-      const optimal = findOptimalVM(
-        vmSizes, 
-        app.cpuRequirement, 
-        app.ramRequirement, 
-        app.storageRequirement, 
-        app.hasUsbRequirement, 
-        [selectedApplication], 
-        parameterValues
-      );
-      setRecommendedVM(optimal);
-      
-      // Find alternative VMs
-      const alternatives = findAlternativeVMs(
-        vmSizes, 
-        optimal, 
-        app.cpuRequirement, 
-        app.ramRequirement, 
-        app.storageRequirement, 
-        app.hasUsbRequirement
-      );
-      setAlternativeVMs(alternatives);
-    }
-  }, [selectedApplication, parameterValues]);
+    setAppRequirements(newAppRequirements);
+  }, [selectedApplications, parameterValues]);
+  
+  // Get the active application object
+  const activeApplication = activeTab 
+    ? colorApplications.find(app => app.id === activeTab) || null 
+    : null;
+  
+  // Get the active application's requirements
+  const activeRequirements = activeTab && appRequirements[activeTab] 
+    ? appRequirements[activeTab] 
+    : null;
   
   return (
     <div className="min-h-screen bg-[#F5F5F5] text-[#333]">
@@ -141,35 +176,92 @@ function App() {
           
           <ApplicationSelector
             applications={colorApplications}
-            selectedApplications={selectedApplication ? [selectedApplication] : []}
+            selectedApplications={selectedApplications}
             onSelectApplication={handleSelectApplication}
           />
-          
-          {selectedApplication && (
-            <ApplicationParameters
-              selectedApplications={[selectedApplication]}
-              parameters={applicationParameters}
-              parameterValues={parameterValues}
-              onParameterChange={handleParameterChange}
-            />
-          )}
         </div>
         
-        <VMRecommendation
-          recommendedVM={recommendedVM}
-          requiredCpu={requiredCpu}
-          requiredRam={requiredRam}
-          requiredStorage={requiredStorage}
-          requiresUsb={requiresUsb}
-          alternativeVMs={alternativeVMs}
-          selectedApplication={selectedApplication ? colorApplications.find(a => a.id === selectedApplication) : null}
-        />
+        {selectedApplications.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm mb-8">
+            {/* Tabs */}
+            <div className="flex border-b">
+              {selectedApplications.map(appId => {
+                const app = colorApplications.find(a => a.id === appId);
+                return (
+                  <div 
+                    key={appId}
+                    className={`flex items-center px-4 py-2 cursor-pointer ${
+                      activeTab === appId 
+                        ? 'bg-white border-t border-l border-r border-b-0 border-gray-200 rounded-t-md' 
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                    onClick={() => setActiveTab(appId)}
+                  >
+                    <span className="mr-2">{app?.name || 'Application'}</span>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveApplication(appId);
+                      }}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                );
+              })}
+              
+              {/* Add new tab button */}
+              <button 
+                className="flex items-center justify-center w-10 h-10 bg-[#ee2d68] text-white"
+                onClick={() => {
+                  // Find first unselected application
+                  const unselectedApp = colorApplications.find(app => !selectedApplications.includes(app.id));
+                  if (unselectedApp) {
+                    handleSelectApplication(unselectedApp.id);
+                  }
+                }}
+              >
+                <Plus className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {/* Tab content */}
+            <div className="p-6">
+              {activeTab && (
+                <>
+                  {/* Application Parameters moved inside the tab content */}
+                  <ApplicationParameters
+                    selectedApplications={[activeTab]}
+                    parameters={applicationParameters}
+                    parameterValues={parameterValues}
+                    onParameterChange={handleParameterChange}
+                  />
+                  
+                  {activeRequirements && activeApplication && (
+                    <div className="mt-8">
+                      <VMRecommendation
+                        recommendedVM={activeRequirements.recommendedVM}
+                        requiredCpu={activeRequirements.cpu}
+                        requiredRam={activeRequirements.ram}
+                        requiredStorage={activeRequirements.storage}
+                        requiresUsb={activeRequirements.usb}
+                        alternativeVMs={activeRequirements.alternativeVMs}
+                        selectedApplication={activeApplication}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </main>
       
       <footer className="bg-white border-t border-gray-200 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 text-sm">
-            VM Size Configurator © {new Date().getFullYear()} - Find the perfect VM for your workload
+          <p className="text-center text-gray-500 text-xs">
+            GMG GmbH & Co. KG - © Copyright {new Date().getFullYear()}
           </p>
         </div>
       </footer>

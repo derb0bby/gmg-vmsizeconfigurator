@@ -32,7 +32,7 @@ const ApplicationParameters: React.FC<ApplicationParametersProps> = ({
   }
 
   return (
-    <div className="mt-8">
+    <div>
       <h2 className="text-xl font-semibold mb-4 text-[#333]">Application Parameters</h2>
       <p className="text-sm text-gray-600 mb-4">
         Adjust the parameters below to customize your VM recommendation.

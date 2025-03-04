@@ -20,9 +20,9 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
 
   return (
     <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4 text-[#333]">Select an Application</h2>
+      <h2 className="text-xl font-semibold mb-4 text-[#333]">Select Applications</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Choose one application to get a VM recommendation based on your specific requirements.
+        Choose one or more applications to get VM recommendations based on your specific requirements.
       </p>
       
       <div className="mb-8">
