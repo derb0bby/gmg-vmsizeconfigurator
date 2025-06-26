@@ -18,6 +18,13 @@ const CustomRequirements: React.FC<CustomRequirementsProps> = ({
   onRamChange,
   onStorageChange
 }) => {
+  const handleChange = (handler: (value: number) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value)) {
+      handler(value);
+    }
+  };
+
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4">Custom Requirements</h2>
@@ -36,7 +43,7 @@ const CustomRequirements: React.FC<CustomRequirementsProps> = ({
             min="1"
             max="32"
             value={cpu}
-            onChange={(e) => onCpuChange(parseInt(e.target.value))}
+            onChange={handleChange(onCpuChange)}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -58,7 +65,7 @@ const CustomRequirements: React.FC<CustomRequirementsProps> = ({
             min="1"
             max="64"
             value={ram}
-            onChange={(e) => onRamChange(parseInt(e.target.value))}
+            onChange={handleChange(onRamChange)}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -81,7 +88,7 @@ const CustomRequirements: React.FC<CustomRequirementsProps> = ({
             max="1000"
             step="10"
             value={storage}
-            onChange={(e) => onStorageChange(parseInt(e.target.value))}
+            onChange={handleChange(onStorageChange)}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
