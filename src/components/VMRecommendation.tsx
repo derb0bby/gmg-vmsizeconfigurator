@@ -59,7 +59,7 @@ const VMRecommendation: React.FC<VMRecommendationProps> = ({
     return (
       <div className="mt-8">
         <p className="text-gray-600">
-          Select an application to get a VM recommendation.
+          Select an application to get a hardware configuration recommendation.
         </p>
       </div>
     );
@@ -70,8 +70,8 @@ const VMRecommendation: React.FC<VMRecommendationProps> = ({
     // Default FAQs for all applications
     const defaultFAQs = [
       {
-        title: "How are VM recommendations calculated?",
-        content: "Our VM recommendations are calculated based on the minimum hardware requirements for your selected application, adjusted according to the parameters you've specified. We analyze factors such as concurrent users, expected workload, and specific application features to determine the optimal VM configuration that balances performance and cost-efficiency."
+        title: "How are hardware configuration recommendations calculated?",
+        content: "Our hardware configuration recommendations are calculated based on the minimum hardware requirements for your selected application, adjusted according to the parameters you've specified. We analyze factors such as concurrent users, expected workload, and specific application features to determine the optimal configuration that balances performance and cost-efficiency."
       }
     ];
 
@@ -136,29 +136,9 @@ const VMRecommendation: React.FC<VMRecommendationProps> = ({
 
   return (
     <div className="mt-8">
-      <div className="mb-6">
-        <h3 className="text-lg font-medium mb-3 text-[#333]">Minimum Required</h3>
-        <div className="flex flex-wrap gap-3 mb-3">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F5F5F5] text-[#333]">
-            <Cpu className="h-4 w-4 mr-1 text-[#ee2d68]" /> {finalRequirements.cpu} cores
-          </span>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F5F5F5] text-[#333]">
-            <MemoryStick className="h-4 w-4 mr-1 text-[#ee2d68]" /> {finalRequirements.ram} GB RAM
-          </span>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F5F5F5] text-[#333]">
-            <HardDrive className="h-4 w-4 mr-1 text-[#ee2d68]" /> {finalRequirements.storage} GB Storage
-          </span>
-          {finalRequirements.requiresUsb && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#F5F5F5] text-[#333]">
-              <Usb className="h-4 w-4 mr-1 text-[#ee2d68]" /> USB Port Required
-            </span>
-          )}
-        </div>
-      </div>
-      
       {recommendedVM && (
         <div className="mb-6">
-          <h3 className="text-lg font-medium mb-3 text-[#333]">Recommended VM</h3>
+          <h3 className="text-lg font-medium mb-3 text-[#333]">Recommended hardware configuration</h3>
           {renderVMCard(recommendedVM, true)}
         </div>
       )}

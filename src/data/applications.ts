@@ -3,7 +3,7 @@ import { Application } from '../types';
 export const applications: Application[] = [
   {
     id: 'color-proof',
-    name: 'ColorProof',
+    name: 'GMG ColorProof',
     cpuRequirement: 4,
     ramRequirement: 8,
     storageRequirement: 512,
@@ -12,7 +12,7 @@ export const applications: Application[] = [
   },
   {
     id: 'open-color',
-    name: 'OpenColor',
+    name: 'GMG OpenColor',
     cpuRequirement: 4,
     ramRequirement: 8,
     storageRequirement: 512,
@@ -21,7 +21,7 @@ export const applications: Application[] = [
   },
   {
     id: 'color-server-conv-multi',
-    name: 'ColorServer Conv / Multi',
+    name: 'GMG ColorServer Conventional / Multicolor',
     cpuRequirement: 8,
     ramRequirement: 16,
     storageRequirement: 512,
@@ -30,7 +30,7 @@ export const applications: Application[] = [
   },
   {
     id: 'color-server-digital',
-    name: 'ColorServer (Digital)',
+    name: 'GMG ColorServer Digital',
     cpuRequirement: 8,
     ramRequirement: 16,
     storageRequirement: 512,
