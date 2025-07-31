@@ -42,11 +42,12 @@ export const determineVMSizeBasedOnParameters = (
   switch (applicationId) {
     case 'color-proof': {
       const printerCount = appParams['printer-count'] as number || 1;
-      const dailyProofs = appParams['daily-proofs'] as number || 50;
+      const dailyProofs = appParams['daily-proofs'] as number || 10;
       
-      if (printerCount >= 3 || dailyProofs >= 30) {
+      // Adjusted thresholds to ensure default values result in 'small'
+      if (printerCount >= 3 || dailyProofs > 30) {
         return 'large';
-      } else if (printerCount >= 2 || dailyProofs <= 30) {
+      } else if (printerCount >= 2 || dailyProofs > 20) {
         return 'medium';
       } else {
         return 'small';
@@ -59,7 +60,7 @@ export const determineVMSizeBasedOnParameters = (
       
       if (connectorCount > 3) {
         return 'large';
-      } else if (connectorCount <= 3 && connectorCount > 1) {
+      } else if (connectorCount > 1) {
         return 'medium';
       } else {
         return 'small';
@@ -69,12 +70,12 @@ export const determineVMSizeBasedOnParameters = (
     case 'color-server-conv-multi':
     case 'color-server-digital': {
       const filesPerDay = applicationId === 'color-server-conv-multi' 
-        ? appParams['files-per-day-conv-multi'] as number || 100
-        : appParams['files-per-day-digital'] as number || 100;
+        ? appParams['files-per-day-conv-multi'] as number || 10
+        : appParams['files-per-day-digital'] as number || 10;
       
       if (filesPerDay > 50) {
         return 'large';
-      } else if (filesPerDay <= 50 && filesPerDay > 20) {
+      } else if (filesPerDay > 20) {
         return 'medium';
       } else {
         return 'small';
@@ -118,8 +119,10 @@ export const findOptimalVM = (
     const appSize = determineVMSizeBasedOnParameters(appId, parameterValues);
     
     // Always use the largest required size
-    if (appSize === 'large' || (appSize === 'medium' && requiredSize === 'small')) {
-      requiredSize = appSize;
+    if (appSize === 'large') {
+      requiredSize = 'large';
+    } else if (appSize === 'medium' && requiredSize === 'small') {
+      requiredSize = 'medium';
     }
   });
   

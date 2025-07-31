@@ -1,6 +1,8 @@
 import React from 'react';
-import { Application, ApplicationParameter } from '../types';
+import { Application, ApplicationParameter, VMSize } from '../types';
 import { Check, Cpu, MemoryStick, HardDrive, Usb } from 'lucide-react';
+import { vmSizes } from '../data/vmSizes';
+import { calculateRequirements, findOptimalVM } from '../utils/vmCalculator';
 
 interface ApplicationSelectorProps {
   applications: Application[];
@@ -27,11 +29,29 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
     ['color-proof', 'open-color', 'color-server-conv-multi', 'color-server-digital'].includes(app.id)
   );
 
+  const getRecommendedVM = (appId: string): VMSize | null => {
+    // Calculate requirements for this single application
+    const baseRequirements = calculateRequirements(applications, [appId]);
+    
+    // Find optimal VM for this application
+    return findOptimalVM(
+      vmSizes,
+      baseRequirements.cpu,
+      baseRequirements.ram,
+      baseRequirements.storage,
+      baseRequirements.requiresUsb,
+      [appId],
+      parameterValues
+    );
+  };
+
   return (
     <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4 text-[#333]">Select Applications</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Choose one or more applications to get VM recommendations based on your specific requirements.
+      <p className="text-sm text-gray-600">
+        Define the average workload or number of connectors to get a recommendation of suitable hardware components.
+      </p>
+			<p className="text-sm text-gray-600 mb-4">
+				Please note that only one GMG application should be installed per system or virtual maschine.
       </p>
       
       <div className="mb-8">
@@ -39,6 +59,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {colorApplications.map((app) => {
             const appParameters = parameters.filter(param => param.applicationId === app.id);
+            const recommendedVM = selectedApplications.includes(app.id) ? getRecommendedVM(app.id) : null;
             
             return (
               <div
@@ -141,6 +162,36 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                         
                         return null;
                       })}
+                    </div>
+                  </div>
+                )}
+
+                {selectedApplications.includes(app.id) && recommendedVM && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="bg-white rounded-lg p-3 border border-[#ee2d68]">
+                      <h4 className="text-sm font-medium text-[#333] mb-2 flex items-center">
+                        Recommended VM
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#ee2d68] text-white">
+                          {recommendedVM.name}
+                        </span>
+                      </h4>
+                      <p className="text-xs text-gray-600 mb-2">{recommendedVM.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
+                          <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.cpu} cores
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
+                          <MemoryStick className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.ram} GB
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
+                          <HardDrive className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.storage} GB
+                        </span>
+                        {recommendedVM.hasUsbPort && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
+                            <Usb className="h-3 w-3 mr-1 text-[#ee2d68]" /> USB Port
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

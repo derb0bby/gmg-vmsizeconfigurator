@@ -16,7 +16,7 @@ export const applicationParameters: ApplicationParameter[] = [
     applicationId: 'color-proof',
     name: 'Daily Proofs',
     type: 'number',
-    defaultValue: 5,
+    defaultValue: 10, // Changed from 5 to 10 to ensure small VM
     min: 1,
     max: 100
   },
@@ -27,7 +27,7 @@ export const applicationParameters: ApplicationParameter[] = [
     applicationId: 'open-color',
     name: 'Connectors',
     type: 'multipleChoice',
-    defaultValue: ['ColorProof'],
+    defaultValue: ['ColorProof'], // Keep single connector for small VM
     options: ['ColorProof', 'PackZ', 'ArtPro+', 'Illustrator Plugin']
   },
   
@@ -37,7 +37,7 @@ export const applicationParameters: ApplicationParameter[] = [
     applicationId: 'color-server-conv-multi',
     name: 'Files per Day',
     type: 'number',
-    defaultValue: 10,
+    defaultValue: 10, // Keep at 10 for small VM
     min: 1,
     max: 100
   },
@@ -48,7 +48,7 @@ export const applicationParameters: ApplicationParameter[] = [
     applicationId: 'color-server-digital',
     name: 'Files per Day',
     type: 'number',
-    defaultValue: 10,
+    defaultValue: 10, // Keep at 10 for small VM
     min: 1,
     max: 100
   }

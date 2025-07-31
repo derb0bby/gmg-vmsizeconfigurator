@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import ApplicationSelector from './components/ApplicationSelector';
-import VMRecommendation from './components/VMRecommendation';
 import { applications } from './data/applications';
 import { applicationParameters } from './data/applicationParameters';
 import { ApplicationParameterValues } from './types';
@@ -40,7 +39,7 @@ function App() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-[#333]">Configure Your VM</h2>
+          <h2 className="text-xl font-semibold text-[#333]">GMG System Requirement Configurator</h2>
           <button
             onClick={handleReset}
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#ee2d68] bg-white border border-[#ee2d68] rounded-md hover:bg-[#ee2d68] hover:text-white transition-colors"
@@ -57,12 +56,6 @@ function App() {
           parameters={applicationParameters}
           parameterValues={parameterValues}
           onParameterChange={handleParameterChange}
-        />
-        
-        <VMRecommendation
-          selectedApplications={selectedApplications}
-          parameterValues={parameterValues}
-          customRequirements={{ cpu: 1, ram: 1, storage: 10 }}
         />
       </main>
     </div>
