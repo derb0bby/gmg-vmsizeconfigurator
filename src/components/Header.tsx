@@ -13,12 +13,10 @@ const Header: React.FC = () => {
         
         <nav>
           <a 
-            href="https://customercare.gmgcolor.com/" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+            href="mailto:support@gmgcolor.com" 
             className="text-[#333] hover:text-[#ee2d68] font-medium px-4 py-2 border border-[#ee2d68] rounded-md hover:bg-[#ee2d68] hover:text-white transition-colors"
           >
-            Get Support
+            Feedback
           </a>
         </nav>
       </div>
