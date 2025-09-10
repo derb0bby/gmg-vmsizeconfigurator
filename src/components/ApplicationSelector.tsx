@@ -76,7 +76,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                 className={`border rounded-lg p-4 cursor-pointer transition-all relative ${
                   selectedApplications.includes(app.id)
                     ? 'border-[#ee2d68] bg-[#F5F5F5]'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-300 hover:border-gray-600'
                 }`}
               >
                 {selectedApplications.includes(app.id) && appParameters.length > 0 && (
