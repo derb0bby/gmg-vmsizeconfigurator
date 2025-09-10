@@ -39,7 +39,7 @@ function App() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="font-semibold text-[#333]">GMG System Requirement Configurator</h1>
+          <h1 className="text-[1.75rem] font-semibold text-[#333]">GMG System Requirement Configurator</h1>
           {/* <button
             onClick={handleReset}
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#ee2d68] bg-white border border-[#ee2d68] rounded-md hover:bg-[#ee2d68] hover:text-white transition-colors"
