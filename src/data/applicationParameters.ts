@@ -9,7 +9,7 @@ export const applicationParameters: ApplicationParameter[] = [
     type: 'number',
     defaultValue: 1,
     min: 1,
-    max: 10
+    max: 3
   },
   {
     id: 'daily-proofs',
