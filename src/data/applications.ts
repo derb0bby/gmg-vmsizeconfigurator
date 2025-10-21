@@ -7,7 +7,7 @@ export const applications: Application[] = [
     cpuRequirement: 4,
     ramRequirement: 8,
     storageRequirement: 512,
-    description: "Color proofing solution for accurate color representation",
+    description: "",
     hasUsbRequirement: true,
   },
   {
@@ -16,16 +16,16 @@ export const applications: Application[] = [
     cpuRequirement: 4,
     ramRequirement: 8,
     storageRequirement: 512,
-    description: "Color management and profiling solution",
+    description: "",
     hasUsbRequirement: true,
   },
   {
     id: "color-server-conv-multi",
-    name: "GMG ColorServer Conventional / Multicolor",
+    name: "GMG ColorServer Conventional or Multicolor",
     cpuRequirement: 8,
     ramRequirement: 16,
     storageRequirement: 512,
-    description: "Conversion and multi-channel color server for high-volume processing",
+    description: "",
     hasUsbRequirement: true,
   },
   {
@@ -34,7 +34,7 @@ export const applications: Application[] = [
     cpuRequirement: 8,
     ramRequirement: 16,
     storageRequirement: 512,
-    description: "Digital color server for digital printing workflows",
+    description: "",
     hasUsbRequirement: true,
   },
   {

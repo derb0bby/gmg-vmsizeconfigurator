@@ -33,6 +33,26 @@ export const calculateRequirements = (
   };
 };
 
+export const calculateDotProofRAM = (
+  applicationId: string,
+  parameterValues: ApplicationParameterValues
+): number => {
+  if (applicationId !== 'color-proof') {
+    return 0;
+  }
+
+  const appParams = parameterValues[applicationId] || {};
+  const printerCount = appParams['printer-count'] as number || 1;
+  const dotproofOptions = appParams['dotproof'] as string[] || [];
+  
+  // If DotProof is selected, add 4 GB RAM per printer count
+  if (dotproofOptions.includes('DotProof')) {
+    return printerCount * 4;
+  }
+  
+  return 0;
+};
+
 export const determineVMSizeBasedOnParameters = (
   applicationId: string,
   parameterValues: ApplicationParameterValues
@@ -58,7 +78,8 @@ export const determineVMSizeBasedOnParameters = (
       const connectors = appParams['connectors'] as string[] || ['ColorProof'];
       const connectorCount = connectors.length;
       
-      if (connectorCount > 3) {
+      // Ab 3 ausgewählten Connectoren empfehlen wir immer VM Size Large
+      if (connectorCount >= 3) {
         return 'large';
       } else if (connectorCount > 1) {
         return 'medium';
@@ -112,6 +133,12 @@ export const findOptimalVM = (
     ) || null;
   }
   
+  // Calculate additional RAM needed for DotProof
+  let additionalRAM = 0;
+  selectedApplicationIds.forEach(appId => {
+    additionalRAM += calculateDotProofRAM(appId, parameterValues);
+  });
+  
   // Determine the required VM size based on application parameters
   let requiredSize: 'small' | 'medium' | 'large' = 'small';
   
@@ -126,8 +153,31 @@ export const findOptimalVM = (
     }
   });
   
-  // Find the VM that matches the required size
-  return eligibleVMs.find(vm => vm.id === requiredSize) || null;
+  // Find the base VM that matches the required size
+  let baseVM = eligibleVMs.find(vm => vm.id === requiredSize);
+  
+  if (!baseVM) {
+    return null;
+  }
+  
+  // If additional RAM is needed, check if we need to upgrade to a larger VM
+  if (additionalRAM > 0) {
+    const totalRAMNeeded = baseVM.ram + additionalRAM;
+    
+    // Find the smallest VM that can accommodate the total RAM requirement
+    const vmsBySize = eligibleVMs.sort((a, b) => a.ram - b.ram);
+    const upgradedVM = vmsBySize.find(vm => vm.ram >= totalRAMNeeded);
+    
+    if (upgradedVM) {
+      // Create a modified VM object with the additional RAM displayed
+      return {
+        ...upgradedVM,
+        ram: totalRAMNeeded
+      };
+    }
+  }
+  
+  return baseVM;
 };
 
 export const findAlternativeVMs = (

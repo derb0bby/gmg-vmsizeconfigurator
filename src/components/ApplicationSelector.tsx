@@ -57,29 +57,27 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
   return (
     <div className="mt-6">
       <p className="text-sm text-gray-600">
-        Define the average workload or number of connectors to get a recommendation of suitable hardware components.
+        The following recommendations are based on our internal testing and hands-on experience with typical industry workloads. Please use this configurator to estimate the hardware requirements for your specific setup. We recognize that every production environment is unique. If your experience differs from our recommendations or if you have further suggestions, we welcome your feedback!
       </p>
+			<br></br>
 			<p className="text-sm text-gray-600 mb-4">
-				Please note that only one GMG application should be installed per system or virtual maschine.
+				Important: To ensure reliable performance, we advise installing only one GMG application per system or virtual machine. In cases with very low workloads (few files or profiles), it may be possible to run more than one application. If you are unsure, please contact us for guidance.
       </p>
       
       <div className="mb-8">
-        <h2 className="text-[1.125rem] font-medium mb-4 text-[#333]">Color Management Applications</h2>
+        {/* <h2 className="text-[1.125rem] font-medium mb-4 text-[#333]">Color Management Applications</h2> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {colorApplications.map((app) => {
             const appParameters = parameters.filter(param => param.applicationId === app.id);
-            const recommendedVM = selectedApplications.includes(app.id) ? getRecommendedVM(app.id) : null;
+            const recommendedVM = getRecommendedVM(app.id);
             
             return (
               <div
                 key={app.id}
-                className={`border rounded-lg p-4 cursor-pointer transition-all relative ${
-                  selectedApplications.includes(app.id)
-                    ? 'border-[#ee2d68] bg-[#F5F5F5]'
-                    : 'border-gray-300 hover:border-gray-600'
-                }`}
+                className="border border-gray-400 rounded-md p-4 relative flex flex-col"
+                onClick={() => onSelectApplication(app.id)}
               >
-                {selectedApplications.includes(app.id) && appParameters.length > 0 && (
+                {appParameters.length > 0 && (
                   <button
                     onClick={(e) => resetApplicationParameters(app.id, e)}
                     className="absolute top-4 right-4 p-1 hover:bg-gray-200 rounded transition-colors"
@@ -89,17 +87,18 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                   </button>
                 )}
                 
-                <div 
-                  className="flex justify-between items-start"
-                  onClick={() => onSelectApplication(app.id)}
-                >
+                <div className="flex justify-between items-start">
                   <div className="pr-8">
-                    <h3 className="font-medium text-[#333] text-[1.125rem]">{app.name}</h3>
+                    <div className="mb-2">
+                      <h3 className="font-medium text-[#333] text-[1.125rem]">
+                        {app.name}
+                      </h3>
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">{app.description}</p>
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-wrap gap-2">
+                {/* <div className="mt-3 flex flex-wrap gap-2">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
                     <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {app.cpuRequirement} cores
                   </span>
@@ -109,10 +108,10 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
                     <HardDrive className="h-3 w-3 mr-1 text-[#ee2d68]" /> {app.storageRequirement} GB
                   </span>
-                </div>
+                </div> */}
 
-                {selectedApplications.includes(app.id) && appParameters.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
+                {appParameters.length > 0 && (
+                  <div className="mt-4 mb-4 pt-2 flex-grow">
                     <div className="space-y-4">
                       {appParameters.map(param => {
                         const value = parameterValues[app.id]?.[param.id] ?? param.defaultValue;
@@ -132,7 +131,6 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                                   value={value as number}
                                   onChange={(e) => onParameterChange(app.id, param.id, parseInt(e.target.value))}
                                   className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#ee2d68]"
-                                  onClick={(e) => e.stopPropagation()}
                                 />
                                 <span className="text-xs text-gray-500 ml-2">{param.max}</span>
                               </div>
@@ -141,10 +139,18 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                         } else if (param.type === 'multipleChoice') {
                           return (
                             <div key={param.id} className="flex flex-col">
-                              <label className="block text-sm font-medium text-[#333] mb-2">
-                                {param.name}
-                              </label>
-                              <div className="flex flex-wrap gap-2">
+                              {/* Add descriptive text specifically for OpenColor connector selection */}
+                              {app.id === 'open-color' && param.id === 'connectors' && (
+                                <p className="font-medium text-sm text-gray-600 mb-6">
+                                  Select all applications that will be connected to OpenColor:
+                                </p>
+                              )}
+                              
+                              {/* Display parameter name with buttons inline */}
+                              <div className="flex items-center flex-wrap gap-2">
+                                <span className="text-sm font-medium text-[#333] mr-2">
+                                  {param.name}:
+                                </span>
                                 {(param.options || []).map(option => (
                                   <button
                                     key={option}
@@ -154,8 +160,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                                         ? 'bg-[#ee2d68] text-white'
                                         : 'bg-[#F5F5F5] text-[#333] hover:bg-gray-200'
                                     }`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
+                                    onClick={() => {
                                       const currentValue = value as string[];
                                       const newValue = currentValue.includes(option)
                                         ? currentValue.filter(v => v !== option)
@@ -177,19 +182,19 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                   </div>
                 )}
 
-                {selectedApplications.includes(app.id) && recommendedVM && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="bg-white rounded-lg p-3 border border-[#ee2d68]">
+                {recommendedVM && (
+                  <div className="mt-auto pt-4">
+                    <div className="bg-gray-50 rounded-md p-3 border border-[#ee2d68]">
                       <h4 className="text-sm font-medium text-[#333] mb-2 flex items-center">
                         Recommended hardware configuration
                         <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#ee2d68] text-white">
                           {recommendedVM.name}
                         </span>
                       </h4>
-                      <p className="text-xs text-gray-600 mb-2">{recommendedVM.description}</p>
+                      {/* <p className="text-xs text-gray-600 mb-2">{recommendedVM.description}</p> */}
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
-                          <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.cpu} cores
+                          <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.cpu} cores (Intel)
                         </span>
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
                           <MemoryStick className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.ram} GB
@@ -207,20 +212,41 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
         </div>
       </div>
 
-      {/* Supported Measuring Devices Info Block */}
+      {/* Additional Information */}
       <div className="mb-10 mt-10">
-        <h2 className="text-[1.125rem] font-medium text-[#333] mb-2">Supported Measuring Devices</h2>
-        <p className="text-base text-gray-700">
-          Please visit our helpcenter article to see which{' '}
-          <a
-            href="https://customercare.gmgcolor.com/hc/en-us/articles/40238234986267-Supported-measuring-devices-across-GMG-products"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#ee2d68] underline"
-          >
-            measuring device is supported in each product.
-          </a>
-        </p>
+        <h2 className="text-[1.125rem] font-medium text-[#333] mb-2">Additional Information:</h2>
+        <ul className="text-base text-gray-700 space-y-2">
+          <li>
+            <a
+              href="https://customercare.gmgcolor.com/hc/en-us/articles/13490223476379-Which-ports-and-URLs-are-used-by-GMG-OpenColor#:~:text=Firewall%20configuration%3A%20List%20of%20required%20ports%20and%20host%20names"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#ee2d68] underline"
+            >
+              Ports and host names for alls products (requires login to helpcenter)
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://customercare.gmgcolor.com/hc/en-us/articles/40238234986267-Supported-measuring-devices-across-GMG-products"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#ee2d68] underline"
+            >
+              Supported measuring devices for all products
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://customercare.gmgcolor.com/hc/en-us/articles/35026827200923-Supported-proof-printers-proof-media-and-print-modes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#ee2d68] underline"
+            >
+              Supported proof printers and proof media for GMG ColorProof
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   );

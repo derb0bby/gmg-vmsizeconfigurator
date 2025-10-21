@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-white h-16 shadow-sm">
+    <header className="bg-white h-20">
       <div className="container mx-auto px-4 h-full flex justify-between items-center">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="78" height="28" fill="none" viewBox="0 0 78 28">
@@ -14,13 +14,15 @@ const Header: React.FC = () => {
         <nav>
           <a 
             href="mailto:support@gmgcolor.com" 
-            className="text-[#333] hover:text-[#ee2d68] font-medium px-4 py-2 border border-[#ee2d68] rounded-md hover:bg-[#ee2d68] hover:text-white transition-colors"
+            className="text-[#ee2d68] hover:text-[#ee2d68] font-medium px-4 py-1 border border-[#ee2d68] rounded-md hover:bg-[#ee2d68] hover:text-white transition-colors"
           >
             Feedback
           </a>
         </nav>
+				
       </div>
     </header>
+		
   );
 };
 

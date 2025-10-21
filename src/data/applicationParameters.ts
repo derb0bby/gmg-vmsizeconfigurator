@@ -20,15 +20,23 @@ export const applicationParameters: ApplicationParameter[] = [
     min: 1,
     max: 100
   },
+  {
+    id: 'dotproof',
+    applicationId: 'color-proof',
+    name: 'Additional Option',
+    type: 'multipleChoice',
+    defaultValue: [],
+    options: ['DotProof']
+  },
   
   // OpenColor parameters
   {
     id: 'connectors',
     applicationId: 'open-color',
-    name: 'Connectors',
+    name: 'Connector',
     type: 'multipleChoice',
     defaultValue: ['ColorProof'], // Keep single connector for small VM
-    options: ['ColorProof', 'PackZ', 'ArtPro+', 'Illustrator Plugin']
+    options: ['ColorProof', 'ColorServer', 'ColorPlugin', 'Third-Party']
   },
   
   // ColorServer Conv / Multi parameters

@@ -37,7 +37,11 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
+			<div className="container mx-auto px-4">
+				<hr className="border-black"></hr>
+			</div>
       <main className="container mx-auto px-4 py-8">
+				
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-[1.75rem] font-semibold text-[#333]">GMG System Requirement Configurator</h1>
           {/* <button
