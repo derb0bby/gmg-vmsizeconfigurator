@@ -218,12 +218,12 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
         <ul className="text-sm text-gray-700 space-y-2">
           <li>
             <a
-              href="https://customercare.gmgcolor.com/hc/en-us/articles/13490223476379-Which-ports-and-URLs-are-used-by-GMG-OpenColor#:~:text=Firewall%20configuration%3A%20List%20of%20required%20ports%20and%20host%20names"
+              href="https://customercare.gmgcolor.com/hc/en-us/articles/31290025697947-Firewall-configuration-List-of-required-ports-and-host-names"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#ee2d68] underline"
             >
-              Ports and host names for alls products (requires login to helpcenter)
+              Ports and host names for all products
             </a>
           </li>
           <li>
