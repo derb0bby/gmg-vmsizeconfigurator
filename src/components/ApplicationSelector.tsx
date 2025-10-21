@@ -215,7 +215,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
       {/* Additional Information */}
       <div className="mb-10 mt-10">
         <h2 className="text-[1.125rem] font-medium text-[#333] mb-2">Additional Information:</h2>
-        <ul className="text-base text-gray-700 space-y-2">
+        <ul className="text-sm text-gray-700 space-y-2">
           <li>
             <a
               href="https://customercare.gmgcolor.com/hc/en-us/articles/13490223476379-Which-ports-and-URLs-are-used-by-GMG-OpenColor#:~:text=Firewall%20configuration%3A%20List%20of%20required%20ports%20and%20host%20names"
