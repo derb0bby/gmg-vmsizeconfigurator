@@ -21,16 +21,7 @@ export const applications: Application[] = [
   },
   {
     id: "color-server-conv-multi",
-    name: "GMG ColorServer Conventional or Multicolor",
-    cpuRequirement: 8,
-    ramRequirement: 16,
-    storageRequirement: 512,
-    description: "",
-    hasUsbRequirement: true,
-  },
-  {
-    id: "color-server-digital",
-    name: "GMG ColorServer Digital",
+    name: "GMG ColorServer",
     cpuRequirement: 8,
     ramRequirement: 16,
     storageRequirement: 512,

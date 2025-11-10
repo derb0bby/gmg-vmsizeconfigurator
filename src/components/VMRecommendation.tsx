@@ -152,6 +152,10 @@ const VMRecommendation: React.FC<VMRecommendationProps> = ({
         </div>
       )}
       
+      <p className="text-xs text-gray-500 mt-6 mb-6">
+        * <a href="https://customercare.gmgcolor.com/hc/en-us/articles/42987113059867" target="_blank" rel="noopener noreferrer" className="text-[#ee2d68] hover:underline">Learn why we recommend Intel processors</a>
+      </p>
+      
       {selectedApps.length > 0 && (
         <div className="mt-8">
           <div className="flex items-center mb-4">

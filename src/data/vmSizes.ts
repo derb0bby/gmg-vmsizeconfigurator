@@ -8,7 +8,7 @@ export const vmSizes: VMSize[] = [
     ram: 8,
     storage: 512,
     price: 100,
-    description: 'Core i7 / 4 CPUs, 8 GB RAM, 512 GB SSD',
+    description: 'Intel* Core i7 / 4 CPUs, 8 GB RAM, 512 GB SSD',
     hasUsbPort: true
   },
   {
@@ -18,7 +18,7 @@ export const vmSizes: VMSize[] = [
     ram: 16,
     storage: 512,
     price: 200,
-    description: 'Core i7 / 8 CPUs, 16 GB RAM, 512 GB SSD',
+    description: 'Intel* Core i7 / 8 CPUs, 16 GB RAM, 512 GB SSD',
     hasUsbPort: true
   },
   {
@@ -28,7 +28,7 @@ export const vmSizes: VMSize[] = [
     ram: 32,
     storage: 1024,
     price: 300,
-    description: 'Core i9 / 8 CPUs, 32 GB RAM, 1024 GB SSD',
+    description: 'Intel* Core i9 / 8 CPUs, 32 GB RAM, 1024 GB SSD',
     hasUsbPort: true
   }
 ];

@@ -64,7 +64,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
 				Important: To ensure reliable performance, we advise installing only one GMG application per system or virtual machine. In cases with very low workloads (few files or profiles), it may be possible to run more than one application. If you are unsure, please contact us for guidance.
       </p>
       
-      <div className="mb-8">
+      <div className="mb-2">
         {/* <h2 className="text-[1.125rem] font-medium mb-4 text-[#333]">Color Management Applications</h2> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {colorApplications.map((app) => {
@@ -194,7 +194,7 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
                       {/* <p className="text-xs text-gray-600 mb-2">{recommendedVM.description}</p> */}
                       <div className="flex flex-wrap gap-2">
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
-                          <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.cpu} cores (Intel)
+                          <Cpu className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.cpu} cores (Intel*)
                         </span>
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#333]">
                           <MemoryStick className="h-3 w-3 mr-1 text-[#ee2d68]" /> {recommendedVM.ram} GB
@@ -211,7 +211,9 @@ const ApplicationSelector: React.FC<ApplicationSelectorProps> = ({
           })}
         </div>
       </div>
-
+			<p className="text-xs text-gray-500">
+        * <a href="https://customercare.gmgcolor.com/hc/en-us/articles/42987113059867" target="_blank" rel="noopener noreferrer" className="text-[#ee2d68] hover:underline">Learn why we recommend Intel processors</a>
+      </p>
       {/* Additional Information */}
       <div className="mb-10 mt-10">
         <h2 className="text-[1.125rem] font-medium text-[#333] mb-2">Additional Information:</h2>
