@@ -29,6 +29,11 @@ export const vmSizes: VMSize[] = [
     storage: 1024,
     price: 300,
     description: 'Intel* Core i9 / 8 CPUs, 32 GB RAM, 1024 GB SSD',
-    hasUsbPort: true
+    hasUsbPort: true,
+    perApplicationOverrides: {
+      'color-server-conv-multi': {
+        cpu: 12
+      }
+    }
   }
 ];

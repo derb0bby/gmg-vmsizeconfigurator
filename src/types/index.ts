@@ -19,6 +19,16 @@ export interface VMSize {
   hasUsbPort?: boolean;
 }
 
+export interface ApplicationVMSizeConfig {
+  small?: Partial<Pick<VMSize, 'cpu' | 'ram' | 'storage'>>;
+  medium?: Partial<Pick<VMSize, 'cpu' | 'ram' | 'storage'>>;
+  large?: Partial<Pick<VMSize, 'cpu' | 'ram' | 'storage'>>;
+}
+
+export interface ApplicationVMSizeMapping {
+  [applicationId: string]: ApplicationVMSizeConfig;
+}
+
 export interface UserRequirements {
   cpu: number;
   ram: number;

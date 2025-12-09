@@ -1,4 +1,5 @@
 import { Application, VMSize, ApplicationParameterValues } from '../types';
+import { applicationVmSizes } from '../data/applicationVmSizes';
 
 export const calculateRequirements = (
   applications: Application[],
@@ -172,12 +173,35 @@ export const findOptimalVM = (
       // Create a modified VM object with the additional RAM displayed
       return {
         ...upgradedVM,
-        ram: totalRAMNeeded
+        ram: totalRAMNeeded,
       };
     }
   }
   
-  return baseVM;
+  if (!baseVM) {
+    return null;
+  }
+
+  // Wende pro-Applikation-Größenkonfiguration auf die Basis-VM an
+  // (hier bewusst ohne optionale Erweiterung/Max-Merging – bei mehreren Apps
+  // gewinnt einfach die zuletzt durchlaufene Konfiguration)
+  let finalVm: VMSize = { ...baseVM };
+  selectedApplicationIds.forEach(appId => {
+    const appConfig = applicationVmSizes[appId];
+    if (!appConfig) return;
+
+    const sizeConfig = appConfig[requiredSize];
+    if (!sizeConfig) return;
+
+    finalVm = {
+      ...finalVm,
+      cpu: sizeConfig.cpu ?? finalVm.cpu,
+      ram: sizeConfig.ram ?? finalVm.ram,
+      storage: sizeConfig.storage ?? finalVm.storage,
+    };
+  });
+
+  return finalVm;
 };
 
 export const findAlternativeVMs = (
